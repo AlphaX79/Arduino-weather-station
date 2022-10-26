@@ -1,0 +1,465 @@
+<!DOCTYPE HTML><html>
+<!-- Rui Santos - Complete project details at https://RandomNerdTutorials.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software. -->
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      min-width: 310px;
+    	max-width: 800px;
+    	height: 400px;
+      margin: 0 auto;
+	background-color:#454545;
+
+    }
+	
+    h2 {
+      font-family: Arial;
+      font-size: 2.5rem;
+      text-align: center;
+      color:white
+    }
+  </style>
+</head>
+<body>
+  <h2>SYSTEM SCADA - Kornelia Maciejewska, Patryk Kamiński</h2>
+  <div id="chart-temperature" class="container" ></div>
+  <div id="chart-humidity" class="container"></div>
+  <div id="chart-enlightment" class="container"></div>
+  <div id="chart-distance" class="container"></div>
+  <div id="chart-dust25" class="container"></div>
+  <div id="chart-dust10" class="container"></div>
+  <div id="chart-dust10_2" class="container"></div>
+  <div id="chart-dust25_2" class="container"></div>
+</body>
+<script>
+const interval=1000
+var chartT = new Highcharts.Chart({
+  chart:{ renderTo : 'chart-temperature', backgroundColor:"#ffb0b0"},
+  title: { text: 'Temperatura', style:{"color":"black"} },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#db0f0f' }
+  },
+  xAxis: { type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' }, 
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Temperatura (Cejslujsz)',style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartT.series[0].data.length > 40) {
+        chartT.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartT.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/temperature", true);
+  xhttp.send();
+}, interval) ;
+
+
+
+var chartH = new Highcharts.Chart({
+  chart:{ renderTo:'chart-humidity', backgroundColor:"#b0ffdb" },
+  title: { text: 'Wilgotność', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+   series: {color:'#369e6f'}
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Wilgotność (%)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartH.series[0].data.length > 40) {
+        chartH.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartH.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/humidity", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP = new Highcharts.Chart({
+  chart:{ renderTo:'chart-enlightment',  backgroundColor:"#f8ff7d" },
+  title: { text: 'Naświetlenie', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#c9c900' }
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Naświetlenie (kHz)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP.series[0].data.length > 40) {
+        chartP.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/light", true);
+  xhttp.send();
+}, interval) ;
+
+var chartD = new Highcharts.Chart({
+  chart:{ renderTo:'chart-distance', backgroundColor:"#9efc6f" },
+  title: { text: 'Odległość', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: {color:'#44ad10'}
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Odległość [cm]', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartD.series[0].data.length > 40) {
+        chartD.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartD.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/dist", true);
+  xhttp.send();
+}, interval) ;
+
+var chartH = new Highcharts.Chart({
+  chart:{ renderTo:'chart-humidity', backgroundColor:"#b0ffdb" },
+  title: { text: 'Wilgotność', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+   series: {color:'#369e6f'}
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Wilgotność (%)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartH.series[0].data.length > 40) {
+        chartH.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartH.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/humidity", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP = new Highcharts.Chart({
+  chart:{ renderTo:'chart-enlightment',  backgroundColor:"#f8ff7d" },
+  title: { text: 'Naświetlenie', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#c9c900' }
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Naświetlenie (kHz)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP.series[0].data.length > 40) {
+        chartP.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/light", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP25 = new Highcharts.Chart({
+  chart:{ renderTo:'chart-dust25', backgroundColor:"#b0ffdb" },
+  title: { text: 'Poziom zapylenia p25', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+   series: {color:'#369e6f'}
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Poziom zapylenia (ug)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP25.series[0].data.length > 40) {
+        chartP25.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP25.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/dust25", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP10 = new Highcharts.Chart({
+  chart:{ renderTo:'chart-dust10',  backgroundColor:"#f8ff7d" },
+  title: { text: 'Poziom zapylenia p10', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#c9c900' }
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Poziom zapylenia (ug)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP10.series[0].data.length > 40) {
+        chartP10.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP10.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/dust10", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP25_2 = new Highcharts.Chart({
+  chart:{ renderTo:'chart-dust25_2', backgroundColor:"#b0ffdb" },
+  title: { text: 'Poziom zapylenia p25', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+   series: {color:'#369e6f'}
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Poziom zapylenia (ug)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP25_2.series[0].data.length > 40) {
+        chartP25_2.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP25_2.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/dust25_2", true);
+  xhttp.send();
+}, interval) ;
+
+var chartP10_2 = new Highcharts.Chart({
+  chart:{ renderTo:'chart-dust10_2',  backgroundColor:"#f8ff7d" },
+  title: { text: 'Poziom zapylenia p10', style:{"color":"black"}  },
+  series: [{
+    showInLegend: false,
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: false,
+      dataLabels: { enabled: true }
+    },
+    series: { color: '#c9c900' }
+  },
+  xAxis: {
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },
+    labels:{style:{color:"black"}}
+  },
+  yAxis: {
+    title: { text: 'Poziom zapylenia (ug)', style:{"color":"black"}  },
+    labels:{style:{color:"black"}}
+  },
+  credits: { enabled: false }
+});
+setInterval(function ( ) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var x = (new Date()).getTime()+2*60*60*1000,
+          y = parseFloat(this.responseText);
+      //console.log(this.responseText);
+      if(chartP10_2.series[0].data.length > 40) {
+        chartP10_2.series[0].addPoint([x, y], true, true, true);
+      } else {
+        chartP10_2.series[0].addPoint([x, y], true, false, true);
+      }
+    }
+  };
+  xhttp.open("GET", "/dust10_2", true);
+  xhttp.send();
+}, interval) ;
+
+</script>
+</html>
