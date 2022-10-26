@@ -28,12 +28,9 @@ uint8_t broadcastAddress[] = {0xCC, 0x50, 0xE3, 0x56, 0x70, 0xB6}; //CC:50:E3:56
   String dust25="";
   String dust10="";
 
-// Login i haslo do sieci
-//const char* ssid = "NETIASPOT-2,4GHz-691CA0";
-//const char* password = "9UpDR5QPJshK";
 
-const char* ssid = "UPC25457F4";
-const char* password = "ky7jnw3Cvpvx";
+const char* ssid = "XXXXXX";
+const char* password = "xxxxxx";
 
 // Tworzenie serwera web na porcie 80
 AsyncWebServer server(80);
